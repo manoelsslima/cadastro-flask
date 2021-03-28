@@ -15,18 +15,9 @@ db = MySQL(app) # setting configurations
 # IoC
 customer_dao = CustomerDAO(db)
 
-customer_list = []
-
-# todo - remove the hard coded customers
-c1 = Customer('John', '+55 (11) 3026-7874', 'john.venn@gmail.com')
-c2 = Customer('Marie', '+55 (68) 3227-9999', 'marie.doss@gmail.com')
-
-# todo - remove the hard coded customers
-customer_list.append(c1)
-customer_list.append(c2)
-
 @app.route('/list')
 def index():
+    customer_list = customer_dao.list_customers()
     return render_template('customer-list.html', title='Customer list', customers = customer_list)
 
 @app.route('/new')

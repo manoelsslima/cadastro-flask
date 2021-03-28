@@ -22,7 +22,11 @@ class CustomerDAO:
         self.__db.connection.commit()
         return customer
     
-    def list(self):
+    def list_customers(self):
         cursor = self.__db.connection.cursor()
         cursor.execute(LIST_CUSTOMER_SQL)
-        customers = cursor.fetchall()
+        all_customers = cursor.fetchall()
+        customers_list = []
+        for customer in all_customers:
+            customers_list.append(Customer(customer[0], customer[1], customer[2]))
+        return customers_list
