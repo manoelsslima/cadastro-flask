@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
@@ -35,6 +35,6 @@ def create_customer():
     email = request.form['email']
     customer = Customer(name, phone, email)
     customer_list.append(customer)
-    return render_template('customer-list.html', title='Customer list', customers = customer_list)
+    return redirect('/list')
 
 app.run(debug=True)
