@@ -27,6 +27,6 @@ class CustomerDAO:
         cursor.execute(LIST_CUSTOMER_SQL)
         all_customers = cursor.fetchall()
         customers_list = []
-        for customer in all_customers:
+        for customer in all_customers: # translating cusror response to a customer object
             customers_list.append(Customer(customer[0], customer[1], customer[2]))
         return customers_list
