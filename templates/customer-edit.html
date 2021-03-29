@@ -1,6 +1,14 @@
 {% extends 'template.html' %}
 {% block content %}
 <form action="{{ url_for('update_customer') }}" method="POST">
+    <figure>
+        <img src="{{ url_for('image', file_name=photo) }}">
+        <figcaption>
+            <label>
+                <input type="file" name="photo" accept=".jpg">
+            </label>
+        </figcaption>
+    </figure>
     <input type="hidden" name="id" value="{{ customer.id }}">
     <div class="form-group">
         <label for="name">Name</label>
