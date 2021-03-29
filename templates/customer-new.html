@@ -1,30 +1,33 @@
 {% extends 'template.html' %}
 {% block content %}
 <form action="create" method="POST", enctype="multipart/form-data">
-    <figure>
-        <img src="{{ url_for('image', file_name='customer-default.jpg') }}">
+    <figure class="thumb col-md-4">
+        <img class="img-responsive" src="{{ url_for('image', file_name='customer-default.jpg') }}">
         <figcaption>
-            <label>
+            <label class="fileContainer">
+                Change photo
                 <input type="file" name="photo" accept=".jpg">
             </label>
         </figcaption>
     </figure>
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" class="form-control form-control-sm">
-    </div>
-    <div class="form-group">
-        <label for="phone">Phone</label>
-        <input type="text" id="phone" name="phone" class="form-control form-control-sm">
-    </div>
-    <div class="form-group">
-        <label for="email">E-mail</label>
-        <input type="text" id="email" name="email" class="form-control form-control-sm">
-    </div>
-    <div class="form-group row">
-        <div class="col-sm-10">
-            <button type="submit" class="btn btn-primary mt-2">Save</button>
-            <a href="{{ url_for('index') }}" class="btn btn-warning mt-2">Back</a>
+    <div class="col-md-8">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" class="form-control form-control-sm">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" name="phone" class="form-control form-control-sm">
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="text" id="email" name="email" class="form-control form-control-sm">
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary mt-2">Save</button>
+                <a href="{{ url_for('index') }}" class="btn btn-warning mt-2">Back</a>
+            </div>
         </div>
     </div>
 </form>
