@@ -3,6 +3,11 @@
     width: 80%;
 }
 
+ul {
+    list-style: none;
+    padding: 0px !important;
+}
+
 figcaption {
     text-align: center;
     margin: 3px auto;
