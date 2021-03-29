@@ -3,6 +3,7 @@ from dao import CustomerDAO
 from flask_mysqldb import MySQL
 from models import Customer
 import os
+import time
 
 app = Flask(__name__)
 app.secret_key = 'cadastro'
@@ -39,17 +40,18 @@ def create_customer():
 
     photo = request.files['photo'] # gets an image
     upload_path = app.config['UPLOAD_PATH']
-    photo.save(f'{upload_path}/photo-customer-id-{customer.id}.jpg') # directory where the photo will be stored
+    timestamp = time.time()
+    photo.save(f'{upload_path}/photo-customer-id-{customer.id}-{timestamp}.jpg') # directory where the photo will be stored
 
     flash('The customer was saved!', 'success')
-    return redirect('/list')
+    return redirect(url_for('index'))
 
 @app.route('/edit_customer/<int:id>') # receiving the customer id
 def edit_customer(id):
     customer = customer_dao.find_by_id(id)
-    photo = f'photo-customer-id-{id}.jpg'
-    print(photo)
-    return render_template('customer-edit.html', title='Editing a customer', customer=customer, photo=photo)
+    #photo = f'photo-customer-id-{id}.jpg'
+    image = retreve_image(id)
+    return render_template('customer-edit.html', title='Editing a customer', customer=customer, photo=image)
 
 @app.route('/update_customer', methods=['POST',])
 def update_customer():
@@ -58,18 +60,34 @@ def update_customer():
     email = request.form['email']
     id = request.form['id']
     customer = Customer(name, phone, email, id)
-    customer_dao.save(customer)
+    customer = customer_dao.save(customer)
+
+    photo = request.files['photo'] # gets an image
+    upload_path = app.config['UPLOAD_PATH']
+    timestamp = time.time()
+    delete_photo(customer.id)
+    photo.save(f'{upload_path}/photo-customer-id-{customer.id}-{timestamp}.jpg') # directory where the photo will be stored
     flash('The customer was updated!', 'info')
-    return redirect('/list')
+    return redirect(url_for('index'))
 
 @app.route('/delete/<int:id>')
 def delete_customer(id):
     customer_dao.delete(id)
+    delete_photo(id)
     flash('The customer was deleted!', 'danger') # display a message
     return redirect('/list')
 
 @app.route('/uploads/<file_name>')
 def image(file_name):
     return send_from_directory('uploads', file_name)
+
+def retreve_image(id):
+    for file in os.listdir(app.config['UPLOAD_PATH']):
+        if f'photo-customer-id-{id}' in file:
+            return file
+
+def delete_photo(id):
+    file = retreve_image(id)
+    os.remove(os.path.join(app.config['UPLOAD_PATH'], file))
 
 app.run(debug=True)
