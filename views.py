@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, flash, url_for, send_from_directory
+from flask import render_template, request, redirect, flash, url_for, send_from_directory, session
 from models import Customer
 from dao import CustomerDAO
 import time
@@ -8,13 +8,39 @@ from helpers import delete_photo, retrieve_image
 # IoC
 customer_dao = CustomerDAO(db)
 
+@app.route('/login')
+def login():
+    next_page = request.args.get('next_page')
+    return render_template('login.html', next_page=next_page)
+
+@app.route('/logout')
+def logout():
+    session['logged_user'] = None
+    flash('You have logged off', 'info')
+    return redirect('/login')
+
+@app.route('/authenticate', methods=['POST',])
+def authenticate():
+    if 'mestra' == request.form['password']:
+        session['logged_user'] = request.form['username']
+        flash('Login successfully!', 'success')
+        next_page = request.form['next_page']
+        return redirect('/{}'.format(next_page))
+    else:
+        flash('Login failed!', 'danger')
+        return redirect('/login')
+
 @app.route('/list')
 def index():
+    if ('logged_user' not in session or session['logged_user'] == None):
+        return redirect('/login?next_page=list')
     customer_list = customer_dao.list_customers()
     return render_template('customer-list.html', title='Customer list', customers = customer_list)
 
 @app.route('/new')
 def new_customer():
+    if 'logged_user' not in session or session['logged_user'] == None:
+        return redirect('/login?next_page=new')
     return render_template('customer-new.html', title='Add new customer')
 
 # GET is the default method. We need POST.
